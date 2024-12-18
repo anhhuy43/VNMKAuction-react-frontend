@@ -20,12 +20,13 @@ function PostDetailPage() {
   const [isAuctionStarted, setIsAuctionStarted] = useState(false);
   const [isAuctionEnded, setIsAuctionEnded] = useState(false);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [isOwner, setIsOwner] = useState(false)
   const [alertMessage, setAlertMessage] = useState("");
 
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("userToken"); // Lấy token từ localStorage
+    const token = localStorage.getItem("userToken");
 
     const socketInstance = io(WS_ENDPOINT, {
       auth: { token },
@@ -51,8 +52,13 @@ function PostDetailPage() {
   // Lấy chi tiết bài post và comment
   useEffect(() => {
     const fetchPostAndComments = async () => {
+      const token = localStorage.getItem('userToken')
       try {
-        const postResponse = await axios.get(`${API_ENDPOINT}/posts/${id}`);
+        const postResponse = await axios.get(`${API_ENDPOINT}/posts/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
         const postData = postResponse.data.post;
 
         setPost({
@@ -61,7 +67,8 @@ function PostDetailPage() {
           highestBidder: postResponse.data.highestBidder || null,
         });
         setComments(postResponse.data.comments);
-
+        setIsOwner(postResponse.data.isOwner)
+        console.log('is owner?', postResponse.data.isOwner)
         // Xác định trạng thái đấu giá ban đầu
         const now = new Date();
         const startTime = new Date(postData.startTime);
@@ -289,7 +296,7 @@ function PostDetailPage() {
             </div>
 
             {/* Form thêm comment đấu giá */}
-            {isAuctionStarted && !isAuctionEnded && (
+            {isAuctionStarted && !isAuctionEnded && !isOwner && (
               <form onSubmit={handleAddComment} className="form-input-bid">
                 <input
                   type="number"
