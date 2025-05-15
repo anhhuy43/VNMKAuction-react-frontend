@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
 import { Link } from "react-router-dom";
 
-
 export default function SearchResult() {
   const [searchParams] = useSearchParams();
   const [results, setResults] = useState([]);
@@ -17,6 +16,7 @@ export default function SearchResult() {
         const response = await axiosInstance.get(
           `/posts/search?query=${query}`
         );
+        console.log("🚀 ~ fetchData ~ response:", response)
         setResults(response.data.data);
       } catch (error) {
         console.error("Error fetching search results:", error);
@@ -35,34 +35,43 @@ export default function SearchResult() {
   }
 
   return (
-    <>
-      {results.map((post, index) => (
-        <div className="post-bid" key={index}>
-          <div className="post-info">
-            <Link to={`posts/${post._id}`}>
-              <h1>{post.name}</h1>
-            </Link>
-            <p>{post.description}</p>
-            <span>{post.createAtFormatted}</span>
-          </div>
+    <div>
+      <div className="title mt-10">
+        <h1 className="text-center text-white text-3xl font-bold">
+          LASTEST AUCTIONS
+        </h1>
+      </div>
+      <div className="list-posts container mx-auto grid grid-cols-5 gap-10 py-10">
+        {results.map((post, index) => (
+          <Link
+            className="post-bid w-full bg-slate-900 rounded-xl overflow-hidden h-[400px]"
+            key={index}
+            to={`posts/${post._id}`}
+          >
+            <div className="product-image aspect-[4/3]">
+              {post.fullImages[0] && (
+                <img
+                  src={post.fullImages[0]}
+                  alt=""
+                  className="object-cover w-full h-full"
+                />
+              )}
+            </div>
 
-          <div className="post-image">
-            <div className="image-child1">
-              {post.images[0] && <img src={post.images[0]} alt="" />}
+            <div className="post-info p-4">
+              <h1 className="font-bold text-center text-3xl mb-2 h-[60px] overflow-hidden">
+                {post.name}
+              </h1>
+              <p className="text-base text-center h-[60px] overflow-hidden text-gray-300">
+                Starting Price: <b>{post.startingPrice}</b>
+              </p>
+              <span className="text-sm text-center text-gray-400 block mt-2">
+                {post.createAtFormatted}
+              </span>
             </div>
-            <div className="image-child2">
-              <div>
-                {post.images[1] && <img src={post.images[1]} alt="" />}
-                {post.images[2] && <img src={post.images[2]} alt="" />}
-              </div>
-              <div>
-                {post.images[3] && <img src={post.images[3]} alt="" />}
-                {post.images[4] && <img src={post.images[4]} alt="" />}
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
-    </>
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }

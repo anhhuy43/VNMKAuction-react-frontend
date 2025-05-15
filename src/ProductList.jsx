@@ -4,7 +4,6 @@ function ProductList() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    // Gửi yêu cầu đến API của backend
     fetch('/api/products')
       .then((response) => response.json())
       .then((data) => setProducts(data))

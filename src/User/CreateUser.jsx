@@ -19,6 +19,9 @@ const SignUp = () => {
         lastName,
         email,
         password,
+      },
+      {
+        validateStatus: (status) => status < 500,
       });
       if (response.data.success) {
         // Đăng ký thành công, chuyển hướng hoặc thực hiện hành động khác
@@ -76,6 +79,7 @@ const SignUp = () => {
             required
           />
         </div>
+        <p style={{ color: "red", fontWeight: "bold" }}>{error}</p>
         <button type="submit" className="signup-button">
           Sign Up
         </button>

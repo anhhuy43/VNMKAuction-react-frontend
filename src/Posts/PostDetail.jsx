@@ -20,8 +20,9 @@ function PostDetailPage() {
   const [isAuctionStarted, setIsAuctionStarted] = useState(false);
   const [isAuctionEnded, setIsAuctionEnded] = useState(false);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
-  const [isOwner, setIsOwner] = useState(false)
+  const [isOwner, setIsOwner] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [socket, setSocket] = useState(null);
 
@@ -52,12 +53,12 @@ function PostDetailPage() {
   // Lấy chi tiết bài post và comment
   useEffect(() => {
     const fetchPostAndComments = async () => {
-      const token = localStorage.getItem('userToken')
+      const token = localStorage.getItem("userToken");
       try {
         const postResponse = await axios.get(`${API_ENDPOINT}/posts/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         const postData = postResponse.data.post;
 
@@ -67,8 +68,8 @@ function PostDetailPage() {
           highestBidder: postResponse.data.highestBidder || null,
         });
         setComments(postResponse.data.comments);
-        setIsOwner(postResponse.data.isOwner)
-        console.log('is owner?', postResponse.data.isOwner)
+        setIsOwner(postResponse.data.isOwner);
+        console.log("is owner?", postResponse.data.isOwner);
         // Xác định trạng thái đấu giá ban đầu
         const now = new Date();
         const startTime = new Date(postData.startTime);
@@ -83,6 +84,12 @@ function PostDetailPage() {
 
     fetchPostAndComments();
   }, [id]);
+
+  useEffect(() => {
+    if (post && post.images && post.images.length > 0) {
+      setSelectedImage(post.images[0]);
+    }
+  }, [post]);
 
   // Cập nhật trạng thái đấu giá và đồng hồ đếm ngược
   useEffect(() => {
@@ -103,9 +110,9 @@ function PostDetailPage() {
     e.preventDefault();
     const bidValue = parseInt(newComment);
 
-    if (bidValue <= post.startPrice) {
+    if (bidValue <= post.startingPrice) {
       showAlert(
-        `Your bid must be higher than the starting price (${post.startPrice} đ).`
+        `Your bid must be higher than the starting price (${post.startingPrice} đ).`
       );
       return;
     }
@@ -193,7 +200,7 @@ function PostDetailPage() {
   };
 
   return (
-    <div>
+    <div className="container mx-auto">
       {post && (
         <div
           className={`post-detail ${isAuctionStarted ? "" : "blur-content"}`}
@@ -206,29 +213,39 @@ function PostDetailPage() {
               </h2>
               <span>{post.userId.email}</span>
             </div>
-            {/* Thông tin bài đấu giá */}
+            <p className="startingPrice">
+              <strong>Starting Price:</strong> {post.startingPrice} đ
+            </p>
             <div className="post-info">
               <h1>{post.name}</h1>
               <p className="description">{post.description}</p>
-              <p>
-                <strong>Starting Price:</strong> {post.startingPrice} đ
-              </p>
+
               <span>{post.createAtFormatted}</span>
             </div>
-            {/* Hình ảnh */}
-            <div className="post-image">
-              <div className="image-child1">
-                {post.images[0] && <img src={post.images[0]} alt="" />}
+            <div className="post-image-gallery">
+              <div className="main-image mb-4">
+                {selectedImage && (
+                  <img
+                    src={selectedImage}
+                    alt="Selected"
+                    className="w-full h-[400px] object-contain rounded-lg shadow"
+                  />
+                )}
               </div>
-              <div className="image-child2">
-                <div>
-                  {post.images[1] && <img src={post.images[1]} alt="" />}
-                  {post.images[2] && <img src={post.images[2]} alt="" />}
-                </div>
-                <div>
-                  {post.images[3] && <img src={post.images[3]} alt="" />}
-                  {post.images[4] && <img src={post.images[4]} alt="" />}
-                </div>
+              <div className="thumbnail-row justify-center flex gap-2 overflow-x-auto">
+                {post.images.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={`Thumbnail ${index}`}
+                    className={`h-20 w-20 object-cover cursor-pointer border-2 rounded ${
+                      selectedImage === img
+                        ? "border-blue-500"
+                        : "border-transparent"
+                    }`}
+                    onClick={() => setSelectedImage(img)}
+                  />
+                ))}
               </div>
             </div>
           </div>

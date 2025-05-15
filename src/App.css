@@ -1,6 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root {
+  height: 100vh;
+}
 
 .main-layout {
   /* background: radial-gradient(
@@ -9,53 +16,9 @@
     rgba(6, 37, 42, 1) 100%
   ); */
   /* background: radial-gradient(circle, rgb(194 228 246) 0%, rgb(32 50 53) 100%); */
-  background: #000000cf;
+  background: #171717;
   min-height: 100vh;
   min-width: 100vw;
-  padding: 60px;
-  padding-top: 0;
-}
-
-.header {
-  padding: 30px 0;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin: 0 auto;
-}
-
-.header .search-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-}
-
-.header .search-form {
-  display: flex;
-  align-items: center;
-}
-
-.header .search-input {
-  border: 1px solid #ccc;
-  outline: none;
-  background: transparent;
-}
-
-.header .search-button {
-  font-size: 18px;
-}
-
-.header-logo {
-  display: flex;
-  margin: 0 auto;
-  padding: 50px;
-  width: 25em;
-  transition: all 0.5s;
-}
-
-.header-logo:hover {
-  transform: scale(1.05);
 }
 
 .btn-logo {
@@ -657,38 +620,28 @@
 }
 
 .list-posts {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 3%;
-  margin: 5%;
 }
 
 .list-posts .post-bid {
   background: #1e1e1e;
-  margin: 60px auto;
-  position: relative;
   border-radius: 26px;
   overflow: hidden;
   border: none;
   color: white;
-  box-shadow: rgb(202 202 202 / 20%) 0px 20px 30px;
-  box-sizing: border-box;
-  margin-bottom: 20px;
-  height: fit-content;
-  transition: all 0.5s;
 }
 
 .list-posts .post-bid:hover {
-  transform: scale(1.05);
+  /* transform: scale(1.05); */
+  box-shadow: rgb(202 202 202 / 20%) 0px 20px 30px;
 }
 
 .list-posts h1 {
-  font-size: 2em;
+  /* font-size: 2em;
   font-weight: bold;
   color: white;
   border-bottom: 1px solid #80808040;
   padding: 10px 0;
-  margin-bottom: 20px;
+  margin-bottom: 20px; */
 }
 
 .list-posts h2 {
@@ -724,17 +677,26 @@
 }
 
 .post-detail {
-  background: #1e1e1e;
-  width: 80%;
-  margin: 60px auto;
   position: relative;
-  border-radius: 26px;
   overflow: hidden;
   border: none;
   color: white;
-  box-shadow: rgb(202 202 202 / 20%) 0px 20px 30px;
-  padding: 50px;
   display: flex;
+}
+
+.post-detail .description {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 2;
+  overflow-wrap: anywhere;
+  display: block;
+  margin-bottom: 10px;
+  font-size: large;
+}
+
+.post-detail .auction-ended p {
+  font-size: x-large;
+  font-weight: bold;
 }
 
 .post-detail .post-bid {
@@ -743,10 +705,10 @@
   padding: 2em;
 }
 
-.post-detail .description {
-  overflow-wrap: anywhere;
-  display: block;
-  white-space: normal;
+.post-detail .post-bid .startingPrice {
+  font-size: xx-large;
+  text-align: center;
+  margin: 20px auto;
 }
 
 .comment-area {
@@ -773,6 +735,10 @@
   height: 10%;
   align-items: center;
   justify-content: center;
+}
+
+.comment-area .current-bid h2 {
+  font-size: x-large;
 }
 
 .blur-content {
@@ -1239,12 +1205,6 @@ textarea,
 .my-posts {
   width: 1400px;
   margin: 60px auto;
-}
-
-.home-header {
-  display: flex;
-  justify-content: center;
-  margin-top: 60px;
 }
 
 .card > hr {

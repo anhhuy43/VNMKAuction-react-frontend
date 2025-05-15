@@ -12,10 +12,16 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${API_ENDPOINT}/user/login`, {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        `${API_ENDPOINT}/user/login`,
+        {
+          email,
+          password,
+        },
+        {
+          validateStatus: (status) => status < 500,
+        }
+      );
 
       if (response.data.success) {
         localStorage.setItem("userToken", response.data.token);
@@ -27,7 +33,7 @@ const Login = () => {
         console.log(error);
       }
     } catch (err) {
-      setError("User not found or wrong password");
+      setError("Invalid email or password");
     }
   };
 
@@ -55,17 +61,16 @@ const Login = () => {
             required
           />
         </div>
+        <p style={{ color: "red", fontWeight: "bold"}}>{error}</p>
         <button className="login-button" type="submit">
-            Login
+          Login
         </button>
         <Link to="/user/create" className="create-user-button">
           Create account
         </Link>
-        
       </form>
     </div>
   );
 };
-
 
 export default Login;
